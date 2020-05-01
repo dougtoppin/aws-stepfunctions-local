@@ -9,13 +9,20 @@ This can also be used as examples of running the aws cli to interact with the St
 
 * docker installed and running
 
+### Files
+
+* Makefile - runs the various functions
+* sf1.json - a state machine definition
+
 ### Usage
+
+A Makefile is used to run the various functions.
 
 The expected usage flow would be as follows
 
 * make startup - run the local StepFunctions sever using a container
-* make create - create a local state machine
-* make run - run a local state machine
-* make update - update the definition of an existing local state machine
+* make create - create a local state machine using the sf1.json definition
+* make run - run a local state machine execution using the input in the Makefile
+* make update - update the definition of an existing local state machine using the sf1.json definition
 * make stop - stop the local StepFunctions server
 
