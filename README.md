@@ -1,7 +1,9 @@
 ## Example of running a local AWS StepFunctions server and state machines
 
 A AWS StepFunctions server can be run locally on your machine by running it as a container.
-.
+
+AWS documentation about it can be found at [https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local.html](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local.html)
+
 This can be helpful for testing things like state machine path processing for InputPath, ResultPath and OutputPath.
 This can also be used as examples of running the aws cli to interact with the StepFunctions service.
 
