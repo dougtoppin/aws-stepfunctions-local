@@ -5,7 +5,7 @@ AWS_ACCESS_KEY_ID=abcd
 AWS_SECRET_KEY=abcd
 
 # name of the StepFunction server container, this makes it easier to stop later
-NAME=stepfunctionslocal
+NAMECONTAINER=stepfunctionslocal
 
 # a role that will work for creating a state machine
 IAMROLEARN=arn:aws:iam::012345678901:role/DummyRole
@@ -23,19 +23,19 @@ SF1=sf1.json
 INPUT1=input1.json
 
 # name of the created state machine
-NAME-test1
+NAMEMACHINE=test1
 
 # start a local StepFunctions server
 startup:
-	docker run -t --rm --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_KEY=${AWS_SECRET_KEY} -p ${PORT}:${PORT} --name ${NAME} amazon/aws-stepfunctions-local &
+	docker run -t --rm --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_KEY=${AWS_SECRET_KEY} -p ${PORT}:${PORT} --name ${NAMECONTAINER} amazon/aws-stepfunctions-local &
 
 # stop the local server
 stop:
-	docker stop ${NAME}
+	docker stop ${NAMECONTAINER}
 
 # create a local state machine
 create:
-	aws stepfunctions --endpoint-url ${ENDPOINT} create-state-machine --name ${NAME} --definition file://${SF1} --role-arn ${IAMROLEARN}
+	aws stepfunctions --endpoint-url ${ENDPOINT} create-state-machine --name ${NAMEMACHINE} --definition file://${SF1} --role-arn ${IAMROLEARN}
 
 # list the state machines that have been created locally
 list:
@@ -58,5 +58,5 @@ run:
 	$(eval EXECUTIONARN=$(shell aws stepfunctions --endpoint-url ${ENDPOINT} start-execution  --state-machine-arn ${STATEMACHINEARN} --input file://${INPUT1} --query executionArn) )
 
 	# get the results of the most recent execution
-	@aws stepfunctions --endpoint-url ${ENDPOINT} describe-execution --execution-arn ${EXECUTIONARN} --query output
+	@aws stepfunctions --endpoint-url ${ENDPOINT} describe-execution --execution-arn ${EXECUTIONARN} --query output --output text
 

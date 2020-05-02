@@ -83,7 +83,7 @@ $ make run
 # get the arn of the existing machine
 # start an execution
 # get the results of the most recent execution
-"{\"json2\":\"json2data\",\"inputpath2\":{\"json2\":\"json2data\"}}"
+{"json2":"json2data","inputpath2":{"json2":"json2data"}}
 ```
 
 In the window where the server is running you should see the log output for the execution.
