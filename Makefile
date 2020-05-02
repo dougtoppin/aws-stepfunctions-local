@@ -16,6 +16,12 @@ PORT=8083
 # the endpoint that the local Step Function server can be accessed
 ENDPOINT="http://localhost:8083"
 
+# example state machine definition
+SF1=sf1.json
+
+# example input file
+INPUT1=input1.json
+
 # start a local StepFunctions server
 startup:
 	docker run -t --rm --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_KEY=${AWS_SECRET_KEY} -p ${PORT}:${PORT} --name ${NAME} amazon/aws-stepfunctions-local &
@@ -46,7 +52,7 @@ run:
 	$(eval STATEMACHINEARN=$(shell aws stepfunctions --endpoint-url "http://localhost:8083" list-state-machines --query stateMachines[].stateMachineArn --output text ) )
 
 	# start an execution
-	$(eval EXECUTIONARN=$(shell aws stepfunctions --endpoint-url ${ENDPOINT} start-execution  --state-machine-arn ${STATEMACHINEARN} --input '{ "inputpath1": { "json1": "json1data" }, "inputpath2": { "json2": "json2data" }, "inputpath3": { "json3": "json3data" }, "otherfield": "field1" }' --query executionArn) )
+	$(eval EXECUTIONARN=$(shell aws stepfunctions --endpoint-url ${ENDPOINT} start-execution  --state-machine-arn ${STATEMACHINEARN} --input file://${INPUT1} --query executionArn) )
 
 	# get the results of the most reecent execution
 	@aws stepfunctions --endpoint-url ${ENDPOINT} describe-execution --execution-arn ${EXECUTIONARN} --query output
