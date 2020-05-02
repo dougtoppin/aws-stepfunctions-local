@@ -48,12 +48,12 @@ update:
 
 # start an execution of a local state machine
 run:
-	# need the arn of the existing maching
+	# get the arn of the existing machine
 	$(eval STATEMACHINEARN=$(shell aws stepfunctions --endpoint-url "http://localhost:8083" list-state-machines --query stateMachines[].stateMachineArn --output text ) )
 
 	# start an execution
 	$(eval EXECUTIONARN=$(shell aws stepfunctions --endpoint-url ${ENDPOINT} start-execution  --state-machine-arn ${STATEMACHINEARN} --input file://${INPUT1} --query executionArn) )
 
-	# get the results of the most reecent execution
+	# get the results of the most recent execution
 	@aws stepfunctions --endpoint-url ${ENDPOINT} describe-execution --execution-arn ${EXECUTIONARN} --query output
 
