@@ -1,6 +1,6 @@
 ## Example of running a local AWS StepFunctions server and state machines
 
-A AWS StepFunctions server can be run locally on your machine by running it as a container.
+The AWS StepFunctions server can be run locally on your machine by running it as a container.
 
 AWS documentation about it can be found at [https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local.html](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local.html)
 
@@ -15,6 +15,14 @@ machine very flexible.
 Look at [https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html)
 for the documentation.
 
+The general intent of this repo is to support creating a state machine that uses path processing in various
+ways to select input fields and output desired results.
+The state machine definition file can be modified and an update performed to replace the existing state machine
+with the modified version.
+
+The input file can be modified to contain the input expected during development in the real world.
+When an execution is run the output will appear.
+
 ### Requirements
 
 * docker installed and running
@@ -22,7 +30,7 @@ for the documentation.
 ### Files
 
 * Makefile - runs the various functions
-* sf1.json - a state machine definition
+* sf1.json - a simple state machine definition using only pass states with path processing
 * input1.json - example input to a state machine
 
 ### Usage
@@ -43,6 +51,16 @@ Build: 2020-02-19
 2020-05-02 01:11:46.378: Loaded credentials from environment
 2020-05-02 01:11:46.386: Starting server on port 8083 with account 123456789012, region us-east-1
 ```
+
+If you do a *docker ps* you should see something similar to the following showing
+the running container.
+
+``` 
+$ docker ps
+CONTAINER ID        IMAGE                            COMMAND                  CREATED             STATUS              PORTS                    NAMES
+1616266b511a        amazon/aws-stepfunctions-local   "java -jar StepFunct…"   27 seconds ago      Up 26 seconds       0.0.0.0:8083->8083/tcp   stepfunctionslocal
+```
+
 * make create - create a local state machine using the sf1.json definition
 
 Example
@@ -57,14 +75,24 @@ aws stepfunctions --endpoint-url "http://localhost:8083" create-state-machine --
 
 * make run - run a local state machine execution using the input in the Makefile, the server will also output log data
 
+It can be helpful to do the run in a separate terminal so that log output from the server can be seen more easily.
+
 Example
 ``` 
 $ make run
-# need the arn of the existing maching
+# get the arn of the existing machine
 # start an execution
-# get the results of the most reecent execution
-"\"World\""
+# get the results of the most recent execution
+"{\"json2\":\"json2data\",\"inputpath2\":{\"json2\":\"json2data\"}}"
 ```
+
+In the window where the server is running you should see the log output for the execution.
+This will include each state in the execution with input and output like you would see when looking at
+the console.
+
+In the window where the *make run* is performed the output from the execution will appear.
+This should reflect the path processing performed on the intput passed in to the execution.
+
 * make update - update the definition of an existing local state machine using the sf1.json definition
 
 Example
@@ -85,10 +113,3 @@ $ make stop
 docker stop stepfunctionslocal
 stepfunctionslocal
 ```
-
-The general intent is to support creating a state machine that uses path processing in various
-ways to select input fields and output desired results.
-The state machine definition file can be modified and an update performed to install it.
-
-Then the input file can be modified to contain the input expected.
-When an execution is run the output will appear.

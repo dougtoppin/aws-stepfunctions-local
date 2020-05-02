@@ -4,7 +4,7 @@
 AWS_ACCESS_KEY_ID=abcd
 AWS_SECRET_KEY=abcd
 
-# name of the StepFunction container, this mkaes it easier to stop later
+# name of the StepFunction server container, this makes it easier to stop later
 NAME=stepfunctionslocal
 
 # a role that will work for creating a state machine
@@ -22,6 +22,9 @@ SF1=sf1.json
 # example input file
 INPUT1=input1.json
 
+# name of the created state machine
+NAME-test1
+
 # start a local StepFunctions server
 startup:
 	docker run -t --rm --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_KEY=${AWS_SECRET_KEY} -p ${PORT}:${PORT} --name ${NAME} amazon/aws-stepfunctions-local &
@@ -32,7 +35,7 @@ stop:
 
 # create a local state machine
 create:
-	aws stepfunctions --endpoint-url ${ENDPOINT} create-state-machine --name test1 --definition file://sf1.json --role-arn ${IAMROLEARN}
+	aws stepfunctions --endpoint-url ${ENDPOINT} create-state-machine --name ${NAME} --definition file://${SF1} --role-arn ${IAMROLEARN}
 
 # list the state machines that have been created locally
 list:
@@ -44,7 +47,7 @@ update:
 	$(eval STATEMACHINEARN=$(shell aws stepfunctions --endpoint-url "http://localhost:8083" list-state-machines --query stateMachines[].stateMachineArn --output text ) )
 
 	# update the existing machine
-	aws stepfunctions --endpoint-url ${ENDPOINT} update-state-machine --definition file://sf1.json --state-machine-arn ${STATEMACHINEARN}  --role-arn ${IAMROLEARN}
+	aws stepfunctions --endpoint-url ${ENDPOINT} update-state-machine --definition file://${SF1} --state-machine-arn ${STATEMACHINEARN}  --role-arn ${IAMROLEARN}
 
 # start an execution of a local state machine
 run:

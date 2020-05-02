@@ -12,7 +12,7 @@
     },
     "State2": {
       "Type": "Pass",
-      "Result": "World",
+      "ResultPath": "$.inputpath2",
       "End": true
     }
   }
